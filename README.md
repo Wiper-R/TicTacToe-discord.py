@@ -13,7 +13,7 @@ You can change Prefix, Status inside main.py.
 
 <h3>How to setup</h3>
 
-You have to change [these emojis](https://github.com/SQWiperYT/Tic-Tac-Toe-Discord.py/blob/master/cogs/ttt.py#L014-L26) to your custom emojis.
+You have to change config.yaml file.
 
 
 If you are not able to solve that problem, heads towards our [Discord Server](https://discord.gg/sgY2cyk)
