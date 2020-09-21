@@ -30,8 +30,8 @@ class TicTacToe_:
 
     # Generates A embed for Tic Tac Toe Game
     def get_ttt_embed(self, player1, player2, data, move_of, final=False, tie=False):
-        embed = discord.Embed(title=f"Match of {player1.name}#{player1.discriminator} vs"
-                                    f" {player2.name}#{player2.discriminator}")
+        embed = discord.Embed(title=f"Match of {player1} vs"
+                                    f" {player2}")
         embed.colour = move_of.colour if not final else player1.colour if move_of == player2 else player2.colour
         data_ = data.copy()
         for i in range(1, 10):
@@ -120,7 +120,7 @@ class TicTacToeBot(commands.Cog):
                 return
 
             # Wait for Confirmation..
-            confirmation = await ctx.prompt(f"{member.mention} {ctx.author.name}#{ctx.author.discriminator} wants to "
+            confirmation = await ctx.prompt(f"{member.mention} {ctx.author} wants to "
                                             f"play 'Tic Tac Toe' with You. Accept/Deny by reacting on below buttons.",
                                             delete_after=False, clear_reactions_after=True, author_id=member.id)
             if not confirmation:
@@ -139,6 +139,7 @@ class TicTacToeBot(commands.Cog):
             remaining_moves = {TicTacToe.top_left: 1, TicTacToe.top: 2, TicTacToe.top_right: 3,
                                TicTacToe.left: 4, TicTacToe.mid: 5, TicTacToe.right: 6,
                                TicTacToe.bottom_left: 7, TicTacToe.bottom: 8, TicTacToe.bottom_right: 9}
+            
             move_of, move_name = player1, player1_move
             initial_embed = TicTacToe.get_ttt_embed(
                 player1, player2, data, move_of)
