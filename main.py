@@ -33,14 +33,9 @@ class TicTac(commands.Bot):
         if isinstance(error, commands.CommandNotFound):
             return
         raise error
-
-    async def process_commands(self, message):
-        ctx = await self.get_context(message, cls=context.Context)
-        await self.invoke(ctx)
-
-
-    async def on_message(self, message):
-        await self.process_commands(message)
+    
+    async def get_context(self, *, cls=context.Context):
+        super().get_context(cls=cls)
 
     def run(self):
         super().run(self.token, reconnect=True)
