@@ -1,0 +1,27 @@
+Token : ''
+
+Status : 'Tic Tac Toe Game'
+
+Prefix : 't!'
+
+# Emojis Section
+
+white_page : ":white_large_square:"
+X_Emoji : "<:WhiteCross:710401170832621628>"
+O_Emoji : "<:WhiteZero:710401573515165746>"
+
+top_left : '<:UpLeftArrow:710733351991902258>'
+top : '<:UpArrow:710734037026865182>'
+top_right : '<:UpRightArrow:710734382654291979>'
+left : '<:LeftArrow:710734758241501207>'
+mid : '<:Middle:710735309486161981>'
+right : '<:RightArrow:710737461319303170>'
+bottom_left : '<:DownLeftArrow:710738324779827211>'
+bottom : '<:DownArrow:710738324595146794>'
+bottom_right : '<:DownRightArrow:710738324914176020>'
+
+
+
+# If any problem in configuration Head towards our discord server
+
+# Future Devs : https://discord.gg/sgY2cyk
