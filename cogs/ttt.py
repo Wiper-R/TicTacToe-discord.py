@@ -11,39 +11,39 @@ with open('config.yaml') as config_file:
     config = yaml.load(config_file, Loader=yaml.FullLoader)
 
 
-class TicTacToe_:
-    def __init__(self):
-        # Emotes Section
-        self.white_page = config['white_page']
-        self.X_Emoji = config['X_Emoji']
-        self.O_Emoji = config['O_Emoji']
+class TicTacToe:
+    # Emotes Section
+    white_page: str = config['white_page']
+    X_Emoji: str = config['X_Emoji']
+    O_Emoji: str = config['O_Emoji']
 
-        self.top_left = config['top_left'].lower()
-        self.top = config['top'].lower()
-        self.top_right = config['top_right'].lower()
-        self.left = config['left'].lower()
-        self.mid = config['mid'].lower()
-        self.right = config['right'].lower()
-        self.bottom_left = config['bottom_left'].lower()
-        self.bottom = config['bottom'].lower()
-        self.bottom_right = config['bottom_right'].lower()
+    top_left: str = config['top_left'].lower()
+    top: str = config['top'].lower()
+    top_right: str = config['top_right'].lower()
+    left: str = config['left'].lower()
+    mid: str = config['mid'].lower()
+    right: str = config['right'].lower()
+    bottom_left: str = config['bottom_left'].lower()
+    bottom: str = config['bottom'].lower()
+    bottom_right: str = config['bottom_right'].lower()
 
     # Generates A embed for Tic Tac Toe Game
-    def get_ttt_embed(self, player1, player2, data, move_of, final=False, tie=False):
-        embed = discord.Embed(title=f"Match of {player1} vs"
-                                    f" {player2}")
+    @staticmethod
+    def get_ttt_embed(player1, player2, data, move_of, final=False, tie=False):
+        embed = discord.Embed(title=f"Match of {player1} vs {player2}")
         embed.colour = move_of.colour if not final else player1.colour if move_of == player2 else player2.colour
         data_ = data.copy()
         for i in range(1, 10):
             if data[i] == 0:
-                data_[i] = self.white_page
+                data_[i] = TicTacToe.white_page
             elif data[i] == 1:
-                data_[i] = self.X_Emoji
+                data_[i] = TicTacToe.X_Emoji
             elif data[i] == 2:
-                data_[i] = self.O_Emoji
-        description = (f"{data_[1]}{data_[2]}{data_[3]}\n"
-                       f"{data_[4]}{data_[5]}{data_[6]}\n"
-                       f"{data_[7]}{data_[8]}{data_[9]}")
+                data_[i] = TicTacToe.O_Emoji
+        description = (
+            f"{data_[1]}{data_[2]}{data_[3]}\n"
+            f"{data_[4]}{data_[5]}{data_[6]}\n"
+            f"{data_[7]}{data_[8]}{data_[9]}")
         if tie:
             description += f'\nMatch Draw!'
         elif not final:
@@ -59,7 +59,8 @@ class TicTacToe_:
         return embed
 
     # Declares Winner if no one is winner, it Returns False
-    def declare_winner(self, data):
+    @staticmethod
+    def declare_winner(data):
         game = []
         for i in [1, 4, 7]:
             row = []
@@ -109,7 +110,6 @@ class TicTacToeBot(commands.Cog):
     async def ttt(self, ctx, member: discord.Member):
         """A tic tac toe command with reactions. When you will use your move the reaction will be removed.
         Invite your friend to play.."""
-        TicTacToe = TicTacToe_()
         try:
             # Exceptions
             if member.bot:
@@ -120,6 +120,9 @@ class TicTacToeBot(commands.Cog):
                 return
 
             message = await ctx.send(f"{member.mention} {ctx.author} wants to play 'Tic Tac Toe' with You. Accept/Deny by reacting on below buttons.")
+
+            for r in ('\N{WHITE HEAVY CHECK MARK}', '\N{CROSS MARK}'):
+                await message.add_reaction(r)
             # Wait for Confirmation..
             confirmation = None
 
@@ -146,8 +149,11 @@ class TicTacToeBot(commands.Cog):
             except asyncio.TimeoutError:
                 confirmation = None
 
-            if not confirmation:
-                return await ctx.send(f"{member} failed/declined to accept your tic tac toe game challenge.")
+            if confirmation is None:
+                return await ctx.send(f"{member} failed to accept your tic tac toe game challenge.")
+
+            elif confirmation is False:
+                return await ctx.send(f"{member} declined your tic tac toe game challenge.")
 
             # Choice of First Turn
             players_ = [ctx.author, member]

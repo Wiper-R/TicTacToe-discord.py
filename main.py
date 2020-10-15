@@ -15,13 +15,13 @@ bot = commands.Bot(prefix)
 
 
 @bot.event
-async def on_ready(self):
+async def on_ready():
     print("Bot is Ready.")
-    await self.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"{status}"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"{status}"))
 
 
 @bot.event
-async def on_command_error(self, ctx, error):
+async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         return
     raise error
