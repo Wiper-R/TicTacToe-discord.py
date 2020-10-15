@@ -119,12 +119,35 @@ class TicTacToeBot(commands.Cog):
                 await ctx.send("You can't play with yourself.")
                 return
 
+            message = await ctx.send(f"{member.mention} {ctx.author} wants to play 'Tic Tac Toe' with You. Accept/Deny by reacting on below buttons.")
             # Wait for Confirmation..
-            confirmation = await ctx.prompt(f"{member.mention} {ctx.author} wants to "
-                                            f"play 'Tic Tac Toe' with You. Accept/Deny by reacting on below buttons.",
-                                            delete_after=False, clear_reactions_after=True, author_id=member.id)
+            confirmation = None
+
+            def check(payload):
+                nonlocal confirmation
+                if payload.message_id != message.id or payload.user_id != member.id:
+                    return False
+
+                codeblock = str(payload.emoji)
+
+                if codeblock not in ('\N{WHITE HEAVY CHECK MARK}', '\N{CROSS MARK}'):
+                    return False
+
+                if codeblock == '\N{WHITE HEAVY CHECK MARK}':
+                    confirmation = True
+                    return True
+
+                elif codeblock == '\N{CROSS MARK}':
+                    confirmation = False
+                    return True
+
+            try:
+                await self.bot.wait_for('raw_reaction_add', timeout=60, check=check)
+            except asyncio.TimeoutError:
+                confirmation = None
+
             if not confirmation:
-                return await ctx.send(f"{str(member)} failed/declined to accept your tic tac toe game challenge.")
+                return await ctx.send(f"{member} failed/declined to accept your tic tac toe game challenge.")
 
             # Choice of First Turn
             players_ = [ctx.author, member]
@@ -136,9 +159,11 @@ class TicTacToeBot(commands.Cog):
                 data[i] = 0
 
             # Remaining Moves Dictionary
-            remaining_moves = {TicTacToe.top_left: 1, TicTacToe.top: 2, TicTacToe.top_right: 3,
-                               TicTacToe.left: 4, TicTacToe.mid: 5, TicTacToe.right: 6,
-                               TicTacToe.bottom_left: 7, TicTacToe.bottom: 8, TicTacToe.bottom_right: 9}
+            remaining_moves = {
+                TicTacToe.top_left: 1, TicTacToe.top: 2, TicTacToe.top_right: 3,
+                TicTacToe.left: 4, TicTacToe.mid: 5, TicTacToe.right: 6,
+                TicTacToe.bottom_left: 7, TicTacToe.bottom: 8, TicTacToe.bottom_right: 9
+            }
 
             move_of, move_name = player1, player1_move
             initial_embed = TicTacToe.get_ttt_embed(

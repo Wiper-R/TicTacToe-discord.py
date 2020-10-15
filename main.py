@@ -1,14 +1,6 @@
 import discord
 from discord.ext import commands
-from discord.ext.commands import CommandNotFound
-import asyncio
-import datetime
-import os
-import time
-import traceback
-import sys
 import yaml
-from cogs.utils import context
 
 with open('config.yaml') as config_file:
     config = yaml.load(config_file, Loader=yaml.FullLoader)
@@ -19,30 +11,38 @@ status = config['Status']
 
 prefix = config['Prefix']
 
+bot = commands.Bot(prefix)
 
-class TicTac(commands.Bot):
-    def __init__(self):
-        self.token = token
-        super().__init__(command_prefix=prefix)
 
-    async def on_ready(self):
-        print("Bot is Ready.")
-        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"{status}"))
+@bot.event
+async def on_ready(self):
+    print("Bot is Ready.")
+    await self.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"{status}"))
 
-    async def process_commands(self, message):
-        ctx = await self.get_context(message, cls=context.Context)
-        await self.invoke(ctx)
 
-    async def on_message(self, message):
-        if message.author.bot:
-            return
+@bot.event
+async def on_command_error(self, ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
+    raise error
 
-        await self.process_commands(message)
 
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.CommandNotFound):
-            return
-        raise error
+@bot.command()
+async def ping(ctx):
+    embed = discord.Embed(
+        title=f'{bot.user.name} latency',
+        description="Latency",
+        color=0x00FFFF)
+    embed.add_field(name="🤖BOT Latency",
+                    value=f"{str(round(bot.latency * 1000))}ms", inline=False)
+    embed.set_footer(
+        text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+    await ctx.send(embed=embed)
 
-    def run(self):
-        super().run(self.token, reconnect=True)
+initial_extensions = ['cogs.ttt']
+
+for ext in initial_extensions:
+    bot.load_extension(ext)
+
+
+bot.run(token)
