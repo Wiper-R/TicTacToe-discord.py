@@ -1,4 +1,7 @@
 # Tic-Tac-Toe-Discord.py
+
+> :warning: **This project is no longer maintained use [this instead](https://github.com/Wiper-R/discord-ext-games)**
+
 This is  a bot by which you can play tic tac toe in your discord server. You can play with response reaction buttons not like other bot which user have to type and get confused.
 Try once you will love it.
 
